@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Game</title>
 
   <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 
@@ -12,19 +11,34 @@
       margin: 0;
       width: 100%;
       height: 100%;
-      background: black;
       overflow: hidden;
+      background: black;
     }
 
     embed {
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
+      border: none;
     }
   </style>
 </head>
 <body>
 
-  <embed src="medvedi.swf">
+<embed src="medvedi.swf">
+
+<script>
+window.onload = () => {
+  const elem = document.documentElement;
+
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    elem.msRequestFullscreen();
+  }
+};
+</script>
 
 </body>
 </html>
