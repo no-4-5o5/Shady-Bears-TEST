@@ -22,169 +22,43 @@
       height: 100vh;
       border: none;
     }
+
+    /* optional: prevents focus outlines */
+    embed:focus {
+      outline: none;
+    }
   </style>
 </head>
+
 <body>
 
+<!-- Safe ad SDK stubs (prevents freezes when game expects ads) -->
 <script>
-const rewardResult = {
-  success: true,
-  completed: true,
-  rewardGranted: true,
-  adViewed: true,
-  finished: true,
-  hasReward: true,
-  cancelled: false,
-  error: null
-};
-
-function finishAd(obj = {}) {
-  try {
-    const funcs = [
-      "beforeAd",
-      "beforeReward",
-      "adStarted",
-      "adViewed",
-      "adFinished",
-      "afterAd",
-      "adBreakDone",
-      "complete",
-      "done",
-      "onComplete",
-      "onSuccess",
-      "onReward",
-      "reward",
-      "rewardGranted",
-      "callback",
-      "finish"
-    ];
-
-    funcs.forEach(name => {
-      if (typeof obj[name] === "function") {
-        try {
-          obj[name](rewardResult);
-        } catch(e) {}
-      }
-    });
-  } catch(e) {}
-}
-
-window.GoogleIMA = {};
-window.google = window.google || {};
-window.google.ima = {};
-
-window.adsbygoogle = [];
+window.GoogleIMA = window.GoogleIMA || {};
 
 window.PokiSDK = {
-  init: () => Promise.resolve(rewardResult),
-  commercialBreak: () => Promise.resolve(rewardResult),
-  rewardedBreak: () => Promise.resolve(rewardResult),
+  init: () => Promise.resolve(true),
+  commercialBreak: (cb) => { if (cb) cb(true); return Promise.resolve(true); },
+  rewardedBreak: (cb) => { if (cb) cb(true); return Promise.resolve(true); },
   gameplayStart: () => {},
-  gameplayStop: () => {},
-  happyTime: () => Promise.resolve(rewardResult),
-  roundEnd: () => {},
-  displayAd: () => Promise.resolve(rewardResult),
-  shareableURL: () => "",
+  gameplayStop: () => {}
 };
 
-window.gdsdk = {
-  init: () => Promise.resolve(rewardResult),
-  preloadAd: () => Promise.resolve(rewardResult),
-  showAd: () => Promise.resolve(rewardResult),
+window.adBreak = (cfg) => {
+  if (cfg?.beforeAd) cfg.beforeAd();
+  if (cfg?.afterAd) cfg.afterAd();
+  if (cfg?.adBreakDone) cfg.adBreakDone();
 };
 
-window.CrazyGames = {
-  SDK: {
-    init: () => Promise.resolve(rewardResult),
-    ad: {
-      requestAd: (_, callbacks = {}) => {
-        setTimeout(() => {
-          if (callbacks.adFinished) callbacks.adFinished();
-          if (callbacks.adViewed) callbacks.adViewed();
-        }, 300);
-      }
-    }
-  }
-};
-
-window.GameAPI = {
-  GameBreak: {
-    request: (fn) => {
-      if (fn) setTimeout(fn, 300);
-    }
-  }
-};
-
-window.adBreak = (o = {}) => {
-  finishAd(o);
-};
-
-window.showAds = (cb) => {
-  setTimeout(() => {
-    if (cb) cb(rewardResult);
-  }, 300);
-
-  return Promise.resolve(rewardResult);
-};
-
-window.showAd = (cb) => {
-  setTimeout(() => {
-    if (cb) cb(rewardResult);
-  }, 300);
-
-  return Promise.resolve(rewardResult);
-};
-
-window.showRewardedAd = (cb) => {
-  setTimeout(() => {
-    if (cb) cb(rewardResult);
-  }, 300);
-
-  return Promise.resolve(rewardResult);
-};
-
-window.requestAds = () => Promise.resolve(rewardResult);
-window.rewardedAd = () => Promise.resolve(rewardResult);
+window.showAd = () => Promise.resolve(true);
+window.showAds = () => {};
+window.requestAds = () => Promise.resolve(true);
+window.rewardedAd = () => Promise.resolve(true);
 window.revive = () => true;
-window.playAds = () => Promise.resolve(rewardResult);
-window.sdkShowAd = () => Promise.resolve(rewardResult);
-
-window.UnityAds = {
-  init: () => {},
-  show: () => Promise.resolve(rewardResult)
-};
-
-window._azerionJGSDK = {
-  showAd: () => Promise.resolve(rewardResult)
-};
-
-window.YaGames = {
-  init: () => Promise.resolve({
-    adv: {
-      showFullscreenAdv: (o = {}) => finishAd(o),
-      showRewardedVideo: (o = {}) => finishAd(o)
-    }
-  })
-};
 </script>
 
+<!-- SWF -->
 <embed id="game" src="medvedi.swf">
-
-<script>
-window.addEventListener("click", () => {
-  const elem = document.documentElement;
-
-  if (!document.fullscreenElement) {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
-    }
-  }
-}, { once: true });
-</script>
 
 </body>
 </html>
