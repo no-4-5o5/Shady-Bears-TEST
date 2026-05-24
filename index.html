@@ -23,7 +23,6 @@
       border: none;
     }
 
-    /* optional: prevents focus outlines */
     embed:focus {
       outline: none;
     }
@@ -32,33 +31,26 @@
 
 <body>
 
-<!-- Safe ad SDK stubs (prevents freezes when game expects ads) -->
+<!-- SAFE SDK EMULATION (prevents ad/revive freezes) -->
 <script>
 window.GoogleIMA = window.GoogleIMA || {};
 
+/* Helper so callbacks never break */
+function safe(cb, value) {
+  try {
+    if (typeof cb === "function") cb(value);
+  } catch (e) {}
+}
+
+/* Poki SDK (callback-safe version) */
 window.PokiSDK = {
   init: () => Promise.resolve(true),
-  commercialBreak: (cb) => { if (cb) cb(true); return Promise.resolve(true); },
-  rewardedBreak: (cb) => { if (cb) cb(true); return Promise.resolve(true); },
-  gameplayStart: () => {},
-  gameplayStop: () => {}
-};
 
-window.adBreak = (cfg) => {
-  if (cfg?.beforeAd) cfg.beforeAd();
-  if (cfg?.afterAd) cfg.afterAd();
-  if (cfg?.adBreakDone) cfg.adBreakDone();
-};
+  commercialBreak: (cb) => {
+    setTimeout(() => safe(cb, true), 50);
+    return Promise.resolve(true);
+  },
 
-window.showAd = () => Promise.resolve(true);
-window.showAds = () => {};
-window.requestAds = () => Promise.resolve(true);
-window.rewardedAd = () => Promise.resolve(true);
-window.revive = () => true;
-</script>
-
-<!-- SWF -->
-<embed id="game" src="medvedi.swf">
-
-</body>
-</html>
+  rewardedBreak: (cb) => {
+    setTimeout(() => safe(cb, true), 50);
+   
