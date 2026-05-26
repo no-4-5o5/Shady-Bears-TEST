@@ -28,12 +28,46 @@
 <body>
 
 <script>
-/* ONLY fix revive (this is your freeze point) */
-window.revive = function(callback) {
-  // instantly succeed so game never freezes
-  if (typeof callback === "function") {
-    setTimeout(() => callback(true), 0);
-  }
+function rewardComplete() {
+  return true;
+}
+
+/* Poki-style rewarded ads */
+window.PokiSDK = {
+  rewardedBreak: () => {
+    return Promise.resolve(true);
+  },
+
+  commercialBreak: () => {
+    return Promise.resolve(true);
+  },
+
+  gameplayStart: () => {},
+  gameplayStop: () => {}
+};
+
+/* generic reward systems */
+window.rewardedAd = () => Promise.resolve(true);
+window.showRewardedAd = () => Promise.resolve(true);
+
+/* common callback-based systems */
+window.adBreak = (o) => {
+  if (o?.beforeAd) o.beforeAd();
+
+  setTimeout(() => {
+    if (o?.afterAd) o.afterAd();
+    if (o?.adBreakDone) o.adBreakDone({
+      breakType: "reward",
+      breakStatus: "viewed"
+    });
+
+    if (o?.adViewed) o.adViewed();
+    if (o?.reward) o.reward();
+  }, 50);
+};
+
+/* revive systems */
+window.revive = () => {
   return true;
 };
 </script>
