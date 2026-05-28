@@ -1,78 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+<title>Fullscreen Game</title>
 
-  <style>
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: black;
-    }
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: black;
+}
 
-    #game {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      border: none;
-    }
-  </style>
+#game-frame {
+    width: 100vw;
+    height: 100vh;
+    border: none;
+    display: block;
+}
+</style>
 </head>
 
 <body>
 
-<script>
-function rewardComplete() {
-  return true;
-}
-
-/* Poki-style rewarded ads */
-window.PokiSDK = {
-  rewardedBreak: () => {
-    return Promise.resolve(true);
-  },
-
-  commercialBreak: () => {
-    return Promise.resolve(true);
-  },
-
-  gameplayStart: () => {},
-  gameplayStop: () => {}
-};
-
-/* generic reward systems */
-window.rewardedAd = () => Promise.resolve(true);
-window.showRewardedAd = () => Promise.resolve(true);
-
-/* common callback-based systems */
-window.adBreak = (o) => {
-  if (o?.beforeAd) o.beforeAd();
-
-  setTimeout(() => {
-    if (o?.afterAd) o.afterAd();
-    if (o?.adBreakDone) o.adBreakDone({
-      breakType: "reward",
-      breakStatus: "viewed"
-    });
-
-    if (o?.adViewed) o.adViewed();
-    if (o?.reward) o.reward();
-  }, 50);
-};
-
-/* revive systems */
-window.revive = () => {
-  return true;
-};
-</script>
-
-<embed id="game" src="medvedi.swf">
+<!-- Replace game.html with your game file -->
+<iframe id="game-frame" src="shady-bears.html" allowfullscreen></iframe>
 
 </body>
 </html>
